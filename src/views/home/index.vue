@@ -21,33 +21,40 @@ async function init() {
 
 
 
+  const viewer = new Cesium.Viewer(homeRef.value, {
+    // baseLayerPicker: false
+    animation: false,
+    timeline: false,
+    infoBox: false,
+    // fullscreenButton: false,
+    baseLayerPicker: false,
+    sceneModePicker: false,
+    geocoder: false,
+    homeButton: false,
+    navigationHelpButton: false,
+    terrainProvider: await Cesium.CesiumTerrainProvider.fromIonAssetId(
+      1
+    )
+  })
 
+
+
+  // viewer.scene.globe.depthTestAgainstTerrain = true;
 
 
 
 
   try {
-
-    const terrainProviderUrl = await Cesium.CesiumTerrainProvider.fromIonAssetId(
-      1
-    )
     const tileset = await Cesium.Cesium3DTileset.fromIonAssetId(2354539);
-    console.log(terrainProviderUrl)
-    const viewer = new Cesium.Viewer(homeRef.value, {
-      // baseLayerPicker: false
-      animation: false,
-      timeline: false,
-      infoBox: false,
-      terrainProvider: terrainProviderUrl
-    })
-    console.log(viewer)
 
     viewer.scene.primitives.add(tileset);
     // await viewer.zoomTo(tileset);
-    // await viewer.flyTo(tileset, {
-    //   duration: 10,
-    //   maximumHeight: 10000
-    // })
+
+    await viewer.flyTo(tileset, {
+      duration: 3,
+      maximumHeight: 10000,
+
+    })
 
     // Apply the default style if it exists
     const extras = tileset.asset.extras;
@@ -57,14 +64,25 @@ async function init() {
       Cesium.defined(extras.ion.defaultStyle)
     ) {
       tileset.style = new Cesium.Cesium3DTileStyle(extras.ion.defaultStyle);
-
-
     }
-    viewer.camera.flyTo({
-      destination: tileset,
-      // orientation: {
-      // }
-    })
+
+
+
+    // lookAt 跳转到设置的目的地上，但是使用鼠标旋转的时候位置不会改变 会一直围绕目的地旋转
+    // 只需要设置经纬度即可 无需设置高度  
+    // 此方法用于锁定某个场景的视角
+
+    const center = Cesium.Cartesian3.fromDegrees(120.2012295808, 30.2546480419)
+    const heading = Cesium.Math.toRadians(50)  // 水平旋转角度
+    const pitch = Cesium.Math.toRadians(-40)  // 垂直旋转角度
+    const range = 1500  // 设置相机距离目标点的高度
+
+    viewer.camera.lookAt(center, new Cesium.HeadingPitchRange(heading, pitch, range))
+
+
+
+
+
 
     // DirectionalLight 表示 从无限远的地方向单一方向发射的光。
     // 解决模型光照问题
@@ -85,4 +103,9 @@ async function init() {
 
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.home {
+  width: 100%;
+  height: 100%;
+}
+</style>
