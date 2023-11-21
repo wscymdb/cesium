@@ -5,6 +5,10 @@
 </template>
 
 <script setup>
+/**
+ * 切记 切记 设置最外层的包裹元素 宽高100vw 和100vh 否则会留白
+ * 看APP.vue的设置
+ */
 import { onMounted, ref } from 'vue';
 import * as Cesium from 'cesium'
 import "cesium/Build/Cesium/Widgets/widgets.css";

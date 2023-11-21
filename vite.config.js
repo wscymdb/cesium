@@ -9,6 +9,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  // base: '/dist',
+  build: {
+    assetsDir: 'static',
+  },
   server: {
     host: '0.0.0.0',
   },
